@@ -1,45 +1,62 @@
-import React, { useState } from 'react';
-import {createNote} from '../services/noteService'
-interface Note {
-  title: string;
-  body: string;
-}
+import React, { useState, useCallback } from "react";
+import { createNote } from "../services/noteService";
+import { Note, NoteFormProps } from "../interfaces/interface";
 
-interface NoteFormProps {
-  onSubmit?: (note: Note) => void;
-  setShowModal:any;
-}
+const initialState: Note = {
+  id: 0,
+  title: "",
+  body: "",
+};
 
-const NoteForm: React.FC<NoteFormProps> = (props) => {
-  const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
+const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, setShowModal }) => {
+  const [note, setNote] = useState(initialState);
 
-  const handleSubmit =async  (event: React.FormEvent) => {
-    event.preventDefault();
-    await createNote({
-      id:Math.random(),
-      body:body
-    })
-    setTitle('');
-    setBody('');
-    props.setShowModal(false);
+  const handleSubmit = useCallback(
+    async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      if (!note.title || !note.body) return;
+      await createNote({
+        ...note,
+        id: Math.random(),
+      });
+      setNote(initialState);
+      setShowModal(false);
+      if (onSubmit) onSubmit(note);
+    },
+    [note, onSubmit, setShowModal]
+  );
 
-  };
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = event.target;
+      setNote((prevNote) => ({
+        ...prevNote,
+        [name]: value,
+      }));
+    },
+    []
+  );
 
   return (
     <form onSubmit={handleSubmit}>
       <input
+        className='title-input'
         type="text"
+        name="title"
         placeholder="Title"
-        value={title}
-        onChange={(event) => setTitle(event.target.value)}
+        value={note.title}
+        onChange={handleChange}
+        aria-label="title"
       />
       <textarea
+        className='description-input'
+        name="body"
         placeholder="Body"
-        value={body}
-        onChange={(event) => setBody(event.target.value)}
+        value={note.body}
+        onChange={handleChange}
+        aria-label="body"
       ></textarea>
-      <button type="submit">Save</button>
+      <button className='save-note' type="submit">Save</button>
     </form>
   );
 };

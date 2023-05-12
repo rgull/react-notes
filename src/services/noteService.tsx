@@ -8,8 +8,6 @@ export const createNote = async (noteData: any) => {
     // Push the noteData into the list array
     list.push(noteData);
     return [...list];
-
-    console.log('Note created:', noteData);
   } catch (error) {
     console.error('Failed to create note:', error);
     throw new Error('Failed to create note.');
