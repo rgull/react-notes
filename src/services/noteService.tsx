@@ -14,6 +14,15 @@ export const createNote = async (noteData: any) => {
   }
 };
 
+export const searchByTitle = async (title:any) => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
+  const searchResults = list.filter((note) =>
+    note.title.toLowerCase().includes(title.toLowerCase())
+  );
+  return searchResults;
+};
+
 
 export const editNote: any = async (noteData: any) => {
   try {
@@ -24,13 +33,10 @@ export const editNote: any = async (noteData: any) => {
     const noteIndex = list.findIndex((note) => note.id === noteData.id);
 
     // If the note is found, update its title and body
-    console.log(noteData)
     if (noteIndex !== -1) {
       list[noteIndex].title = noteData.title;
       list[noteIndex].body = noteData.body;
     }
-
-    console.log('Note edited:', noteData);
   } catch (error) {
     console.error('Failed to edit note:', error);
     throw new Error('Failed to edit note.');
@@ -48,8 +54,6 @@ export const deleteNote = async (noteId: number) => {
     if (noteIndex !== -1) {
       list.splice(noteIndex, 1);
     }
-
-    console.log('Note deleted:', noteId);
 
     // Return the updated list after deletion
     return [...list];
@@ -78,7 +82,6 @@ export const getNote: any = (id: number) => {
     const note = list.find((note) => note.id == id);
 
     if (note) {
-      console.log('Note retrieved:', note);
       return note;
     } else {
 

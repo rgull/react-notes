@@ -7,7 +7,7 @@ import "../styles/note.css";
 import NoteEdit from "./NoteEdit";
 import { Note, NoteListProps, NoteState } from "../interfaces/interface";
 
-const NoteList: React.FC<NoteListProps> = ({ notes, setNotes }) => {
+const NoteList: React.FC<NoteListProps> = ({ notes, setNotes,setLoading }) => {
   const [noteState, setNoteState] = useState<NoteState>({
     showModal: false,
     selectedNote: null,
@@ -37,10 +37,12 @@ const NoteList: React.FC<NoteListProps> = ({ notes, setNotes }) => {
   };
 
   const handleDeleteClick = async (id: number) => {
+    setLoading(true);
     const res = await deleteNote(id);
     if (res) {
       const notes = await getAllNotes();
       setNotes(notes);
+      setLoading(false);
     }
   };
 
@@ -52,12 +54,14 @@ const NoteList: React.FC<NoteListProps> = ({ notes, setNotes }) => {
   };
 
   return (
-    <div className='container'>
+<>
+    {
+      !notes.length ?  <p className="text-center mt-8 font-bold">No results found.</p>: <div className='container'>
       {notes.map(({ id, title, body }: any) => (
         <div key={id} className="card">
           <Link to={`/note/${id}`} className='link-wrapper'>
-            <h2 className='title'>{title}</h2>
-            <p className='description'>{body}</p>
+            <h2 className='title text-2xl'>{title}</h2>
+            <p className='description mt-4'>{body}</p>
           </Link>
           <div className='edit-delete-wrapper'>
             <RiEdit2Line
@@ -79,14 +83,19 @@ const NoteList: React.FC<NoteListProps> = ({ notes, setNotes }) => {
         <Box sx={style}>
           {noteState.selectedNote && (
             <NoteEdit
-              note={noteState.selectedNote}
+            note={noteState.selectedNote}
               setNotes={setNotes}
               onCancel={handleModalClose}
-            />
-          )}
+              setLoading={setLoading}
+              />
+              )}
         </Box>
       </Modal>
     </div>
+    }
+    
+    
+              </>
   );
 };
 

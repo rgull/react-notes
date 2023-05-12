@@ -8,19 +8,21 @@ const initialState: Note = {
   body: "",
 };
 
-const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, setShowModal }) => {
+const NoteForm: React.FC<NoteFormProps> = ({ onSubmit, setShowModal,  setLoading}) => {
   const [note, setNote] = useState(initialState);
 
   const handleSubmit = useCallback(
     async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       if (!note.title || !note.body) return;
+      setLoading(true);
       await createNote({
         ...note,
         id: Math.random(),
       });
       setNote(initialState);
       setShowModal(false);
+      setLoading(false);
       if (onSubmit) onSubmit(note);
     },
     [note, onSubmit, setShowModal]

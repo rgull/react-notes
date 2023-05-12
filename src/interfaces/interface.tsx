@@ -14,12 +14,14 @@ export interface NoteState {
 export interface NoteListProps {
   notes: Note[];
   setNotes: React.Dispatch<React.SetStateAction<Note[]>>;
+  setLoading: (loading: boolean) => void;
 }
 
 export interface NoteEditProps {
   note: any;
   setNotes: any;
   onCancel: () => void;
+  setLoading: (loading: boolean) => void;
 }
 
 export interface NoteDetailsProps {
@@ -29,4 +31,5 @@ export interface NoteDetailsProps {
 export interface NoteFormProps {
   onSubmit?: (note: Note) => void;
   setShowModal: (show: boolean) => void;
+  setLoading: (loading: boolean) => void;
 }
